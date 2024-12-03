@@ -1,25 +1,32 @@
-import CodeEditor from "react-simple-code-editor";
-import { highlight, languages } from "prismjs";
-import "prismjs/components/prism-markup-templating";
-import "prismjs/components/prism-django";
-import "prismjs/themes/prism.css"; //Example style, you can use another
+import { langs } from "@uiw/codemirror-extensions-langs";
+import { aura } from "@uiw/codemirror-theme-aura";
+import CodeMirror from "@uiw/react-codemirror";
 
 export default function Editor({
   language,
   value,
   onChange,
 }: {
-  language: "nunjucks" | "jinja2";
+  language: "nunjucks" | "jinja2" | "yaml" | "json";
   value: string;
-  onChange: (value: string) => unknown;
+  onChange?: (value: string) => unknown;
 }) {
   language = language === "nunjucks" ? "jinja2" : language;
 
   return (
-    <CodeEditor
-      highlight={(code) => highlight(code, languages[language], language)}
+    <CodeMirror
       value={value}
-      onValueChange={onChange}
+      onChange={onChange}
+      theme={aura}
+      extensions={[langs[language]()]}
+      basicSetup={
+        {
+          // foldGutter: false,
+          // dropCursor: false,
+          // allowMultipleSelections: false,
+          // indentOnInput: false,
+        }
+      }
     />
   );
 }

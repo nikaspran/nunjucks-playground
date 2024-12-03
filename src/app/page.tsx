@@ -34,7 +34,10 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main>
-      <Playground />
+      <h1>Nunjucks Playground</h1>
+      <h2>Explore and test Nunjucks templates in real-time</h2>
+
+      <Playground language="nunjucks" />
     </main>
   );
 }
