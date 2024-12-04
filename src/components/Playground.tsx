@@ -1,9 +1,46 @@
 "use client";
-
+import nunjucks from "nunjucks/browser/nunjucks";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import jsYaml from "js-yaml";
 import { Editor } from "./Editor";
-import { useEffect, useState } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 import useDebounce from "@/hooks/useDebounce";
+import { cn } from "@/lib/utils";
+
+class NunjucksLoader implements nunjucks.ILoader {
+  getSource(name: string): nunjucks.LoaderSource {
+    throw new Error(`Template loading not supported: ${name}`);
+  }
+}
+
+function Card({ children }: { children: ReactNode }) {
+  return (
+    <div className="bg-[#21202e] border-slate-600 border rounded overflow-hidden shadow-md">
+      {children}
+    </div>
+  );
+}
+
+function CardHeader({
+  className,
+  children,
+}: {
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <h3
+      className={cn(
+        "border-b-slate-600 border-b px-2 py-1 font-bold",
+        className
+      )}
+    >
+      {children}
+    </h3>
+  );
+}
+
+const DATA_FORMATS = ["yaml", "json"] as const;
 
 export default function Playground({
   language,
@@ -16,37 +53,76 @@ export default function Playground({
   );
   const debouncedTemplate = useDebounce(template, 300);
   const [output, setOutput] = useState("" as string);
-  const [data, setData] = useLocalStorage(`data-${language}`, "" as string);
   const [selectedDataFormat, setSelectedDataFormat] = useLocalStorage<
-    "yaml" | "json"
-  >(`dataFormat-${language}`, "yaml");
+    (typeof DATA_FORMATS)[number]
+  >(`dataFormat-${language}`, DATA_FORMATS[0]);
+  const [data, setData] = useLocalStorage(
+    `data-${language}-${selectedDataFormat}`,
+    "" as string
+  );
 
   useEffect(() => {
-    setOutput(`Compiled: ${debouncedTemplate}`);
-  }, [debouncedTemplate, language]);
+    const env = new nunjucks.Environment(new NunjucksLoader(), {});
+    try {
+      const parsedData = data
+        ? selectedDataFormat === "json"
+          ? JSON.parse(data)
+          : jsYaml.load(data)
+        : {};
+
+      const newOutput = env.renderString(debouncedTemplate, parsedData);
+      setOutput(newOutput);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setOutput(error.toString());
+    }
+  }, [debouncedTemplate, language, data, selectedDataFormat]);
 
   return (
-    <div className="grid grid-cols-2">
-      <div>
-        <h3>Template</h3>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Card>
+        <CardHeader>Template</CardHeader>
 
         <Editor language={language} value={template} onChange={setTemplate} />
-      </div>
+      </Card>
 
-      <div>
-        <h3>Output</h3>
+      <Card>
+        <CardHeader>Output</CardHeader>
         <Editor language={language} value={output} />
-      </div>
+      </Card>
 
-      <div>
-        <h3>Data</h3>
+      <Card>
+        <CardHeader className="flex justify-between">
+          <span>Data</span>
+          <span>
+            {DATA_FORMATS.map((format, index) => (
+              <Fragment key={format}>
+                <button
+                  className={cn(
+                    "text-sm cursor-pointer hover:underline underline-offset-2",
+                    format === selectedDataFormat
+                      ? "text-slate-200"
+                      : "text-slate-400"
+                  )}
+                  onClick={() => setSelectedDataFormat(format)}
+                >
+                  {format}
+                </button>
+                {index < DATA_FORMATS.length - 1 ? (
+                  <span className="px-1">/</span>
+                ) : null}
+              </Fragment>
+            ))}
+          </span>
+        </CardHeader>
 
         <Editor language={selectedDataFormat} value={data} onChange={setData} />
-      </div>
+      </Card>
 
-      <div>
-        <h3>Options</h3>
-      </div>
+      <Card>
+        <CardHeader>Options</CardHeader>
+        Some test content
+      </Card>
     </div>
   );
 }

@@ -18,15 +18,9 @@ export default function Editor({
       value={value}
       onChange={onChange}
       theme={aura}
+      height="300px"
       extensions={[langs[language]()]}
-      basicSetup={
-        {
-          // foldGutter: false,
-          // dropCursor: false,
-          // allowMultipleSelections: false,
-          // indentOnInput: false,
-        }
-      }
+      basicSetup={{}}
     />
   );
 }
