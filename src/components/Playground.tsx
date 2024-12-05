@@ -70,7 +70,7 @@ export default function Playground({
           : jsYaml.load(data)
         : {};
 
-      const newOutput = env.renderString(debouncedTemplate, parsedData);
+      const newOutput = env.renderString(debouncedTemplate || "", parsedData);
       setOutput(newOutput);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -83,12 +83,21 @@ export default function Playground({
       <Card>
         <CardHeader>Template</CardHeader>
 
-        <Editor language={language} value={template} onChange={setTemplate} />
+        <div className="min-h-[300px]">
+          <Editor
+            language={language}
+            value={template || ""}
+            onChange={setTemplate}
+            height="300px"
+          />
+        </div>
       </Card>
 
       <Card>
         <CardHeader>Output</CardHeader>
-        <Editor language={language} value={output} />
+        <div className="min-h-[300px]">
+          <Editor language={language} value={output} height="300px" />
+        </div>
       </Card>
 
       <Card>
@@ -116,12 +125,20 @@ export default function Playground({
           </span>
         </CardHeader>
 
-        <Editor language={selectedDataFormat} value={data} onChange={setData} />
+        <div className="min-h-[300px]">
+          <Editor
+            language={selectedDataFormat || "yaml"}
+            value={data || ""}
+            onChange={setData}
+            height="300px"
+          />
+        </div>
       </Card>
 
       <Card>
         <CardHeader>Options</CardHeader>
-        Some test content
+
+        <div className="min-h-[300px]">Some test content</div>
       </Card>
     </div>
   );

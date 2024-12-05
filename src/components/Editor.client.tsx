@@ -6,10 +6,12 @@ export default function Editor({
   language,
   value,
   onChange,
+  height,
 }: {
   language: "nunjucks" | "jinja2" | "yaml" | "json";
   value: string;
   onChange?: (value: string) => unknown;
+  height: string;
 }) {
   language = language === "nunjucks" ? "jinja2" : language;
 
@@ -18,7 +20,7 @@ export default function Editor({
       value={value}
       onChange={onChange}
       theme={aura}
-      height="300px"
+      height={height}
       extensions={[langs[language]()]}
       basicSetup={{}}
     />
