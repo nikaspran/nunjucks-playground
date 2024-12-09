@@ -101,7 +101,7 @@ export default function Playground({
 
   const parsedOptions = options ? parseOptions(options) : DEFAULT_OPTIONS;
 
-  function setOption(path: string, value: any) {
+  function setOption(path: string, value: unknown) {
     const copy = JSON.parse(JSON.stringify(parsedOptions));
     set(copy, path, value);
     setOptions(JSON.stringify(copy));
