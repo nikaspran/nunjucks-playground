@@ -249,7 +249,12 @@ export default function Playground({
           <div className="flex justify-center border-t border-t-slate-600 p-2">
             <span>
               Made with 💻 by{" "}
-              <a href="https://nikas.praninskas.com/about/">Nikas Praninskas</a>
+              <a
+                href="https://nikas.praninskas.com/about/"
+                className="font-bold hover:underline underline-offset-1"
+              >
+                Nikas Praninskas
+              </a>
             </span>
           </div>
         </div>
