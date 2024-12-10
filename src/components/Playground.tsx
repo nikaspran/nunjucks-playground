@@ -184,59 +184,73 @@ export default function Playground({
       <Card>
         <CardHeader>Options</CardHeader>
 
-        <div className="min-h-[300px] py-2 px-4">
-          <div className="grid grid-cols-2 gap-1">
-            {(
-              [
-                "autoescape",
-                "throwOnUndefined",
-                "trimBlocks",
-                "lstripBlocks",
-              ] as const
-            ).map((booleanOption) => (
-              <div key={booleanOption}>
-                <input
-                  type="checkbox"
-                  className="cursor-pointer"
-                  id={booleanOption}
-                  checked={parsedOptions[booleanOption]}
-                  onChange={(event) =>
-                    setOption(booleanOption, event.target.value)
-                  }
-                />
-                <label className="pl-1 cursor-pointer" htmlFor={booleanOption}>
-                  {booleanOption}
-                </label>
-              </div>
-            ))}
+        <div className="min-h-[300px] flex flex-col">
+          <div className="py-2 px-4 ">
+            <div className="grid grid-cols-2 gap-1 gap-x-4">
+              {(
+                [
+                  "autoescape",
+                  "throwOnUndefined",
+                  "trimBlocks",
+                  "lstripBlocks",
+                ] as const
+              ).map((booleanOption) => (
+                <div key={booleanOption}>
+                  <input
+                    type="checkbox"
+                    className="cursor-pointer"
+                    id={booleanOption}
+                    checked={parsedOptions[booleanOption]}
+                    onChange={(event) =>
+                      setOption(booleanOption, event.target.value)
+                    }
+                  />
+                  <label
+                    className="pl-1 cursor-pointer"
+                    htmlFor={booleanOption}
+                  >
+                    {booleanOption}
+                  </label>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-2 gap-1 gap-x-4 pt-2">
+              {(
+                [
+                  "blockStart",
+                  "blockEnd",
+                  "variableStart",
+                  "variableEnd",
+                  "commentStart",
+                  "commentEnd",
+                ] as const
+              ).map((tagOption) => (
+                <div key={tagOption} className="flex flex-col">
+                  <input
+                    type="text"
+                    className="text-slate-800"
+                    id={tagOption}
+                    value={parsedOptions?.tags?.[tagOption]}
+                    onChange={(event) =>
+                      setOption(`tags.${tagOption}`, event.target.value)
+                    }
+                  />
+                  <label className="pl-1 cursor-pointer" htmlFor={tagOption}>
+                    {tagOption}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-1 pt-2">
-            {(
-              [
-                "blockStart",
-                "blockEnd",
-                "variableStart",
-                "variableEnd",
-                "commentStart",
-                "commentEnd",
-              ] as const
-            ).map((tagOption) => (
-              <div key={tagOption}>
-                <input
-                  type="text"
-                  className="text-slate-800"
-                  id={tagOption}
-                  value={parsedOptions?.tags?.[tagOption]}
-                  onChange={(event) =>
-                    setOption(`tags.${tagOption}`, event.target.value)
-                  }
-                />
-                <label className="pl-1 cursor-pointer" htmlFor={tagOption}>
-                  {tagOption}
-                </label>
-              </div>
-            ))}
+          <div className="flex-1" />
+
+          <div className="flex justify-center border-t border-t-slate-600 p-2">
+            <span>
+              Made with 💻 by{" "}
+              <a href="https://nikas.praninskas.com/about/">Nikas Praninskas</a>
+            </span>
           </div>
         </div>
       </Card>
